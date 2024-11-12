@@ -28,6 +28,7 @@ namespace SRS.Interfaces.InMemory
 
             if (client != null)
             {
+                client.Name = updatedClient.Name;
                 client.Age = updatedClient.Age;
                 client.isVIP = updatedClient.isVIP;
             }

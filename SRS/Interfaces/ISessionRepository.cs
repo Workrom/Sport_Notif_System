@@ -13,6 +13,5 @@ namespace SRS.Interfaces
         void AddSession(TrainingSession session);
         void RemoveSession(TrainingSession session);
         void UpdateSession(TrainingSession session);
-        void AddClientToSession(Client client, TrainingSession session);
     }
 }

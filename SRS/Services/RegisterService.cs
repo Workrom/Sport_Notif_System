@@ -21,6 +21,8 @@ namespace SRS.Services
         {
             _clientRepository = clientRepo;
             _sessionRepository = sessionRepo;
+
+            SessionFull += OnSessionFullHandler;
         }
 
         public void RegisterClient(Client client, TrainingSession session)
@@ -41,6 +43,12 @@ namespace SRS.Services
             {
                 OnSessionFull(new SessionFullEventArgs(session));
             }
+        }
+        private void OnSessionFullHandler(object sender, SessionFullEventArgs e)
+        {
+
+            Console.WriteLine($"Session {e.Session.Type} is full.");
+
         }
         protected virtual void OnClientRegistered(ClientRegisteredEventArgs e)
         {
