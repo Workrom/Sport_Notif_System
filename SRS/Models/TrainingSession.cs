@@ -20,6 +20,7 @@ namespace SRS.Models
         private StatusType _status;
         public StatusType Status => _status;
         public List<Client> Clients { get; set; } = new List<Client>();
+        public Client? VIPClient { get; set; }
 
         public TrainingSession()
         {
