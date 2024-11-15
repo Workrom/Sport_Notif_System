@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SRS.CustomEventArgs
 {
-    public class TrainerRegisteredEventArgs(Trainer trainer) : EventArgs
+    public class TrainerEventArgs(Trainer trainer) : EventArgs
     {
         public Trainer Trainer { get; } = trainer;
     }

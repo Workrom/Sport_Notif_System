@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace SRS.CustomEventArgs
 {
-    public class SessionRegisteredEventArgs(TrainingSession session): EventArgs
+    public class ClientEventArgs(Client client, TrainingSession session) : EventArgs
     {
+        public Client Client { get; } = client;
         public TrainingSession Session { get; } = session;
     }
 }

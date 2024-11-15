@@ -17,10 +17,10 @@ namespace SRS.Services
         private readonly ISessionRepository _sessionRepository;
         private readonly ITrainerRepository _trainerRepository;
 
-        public event EventHandler<SessionFullEventArgs> SessionFull;
-        public event EventHandler<ClientRegisteredEventArgs> ClientRegistered;
-        public event EventHandler<TrainerRegisteredEventArgs> TrainerRegistered;
-        public event EventHandler<SessionRegisteredEventArgs> SessionRegistered;
+        public event EventHandler<SessionFullEventArgs>? SessionFull;
+        public event EventHandler<ClientEventArgs>? ClientRegistered;
+        public event EventHandler<TrainerEventArgs>? TrainerRegistered;
+        public event EventHandler<SessionEventArgs>? SessionRegistered;
 
         public RegisterService(IClientRepository clientRepo, ISessionRepository sessionRepo, ITrainerRepository trainerRepo)
         {
@@ -40,8 +40,8 @@ namespace SRS.Services
                 if (session.VIPClient == null)
                 {
                     session.VIPClient = client;
-                    OnClientRegistered(new ClientRegisteredEventArgs(client, session));
                     _clientRepository.AddClient(client);
+                    OnClientRegistered(new ClientEventArgs(client, session));
                 }
                 else
                 {
@@ -52,8 +52,8 @@ namespace SRS.Services
             else
             {
                 session.Clients.Add(client);
-                OnClientRegistered(new ClientRegisteredEventArgs(client, session));
                 _clientRepository.AddClient(client);
+                OnClientRegistered(new ClientEventArgs(client, session));
             }
 
             //*Dont know if i really need this. We gonna find out soon
@@ -67,23 +67,23 @@ namespace SRS.Services
         {
             trainer.Sessions = sessions ?? trainer.Sessions;
             _trainerRepository.AddTrainer(trainer);
-            OnTrainerRegistered(new TrainerRegisteredEventArgs(trainer));
+            OnTrainerRegistered(new TrainerEventArgs(trainer));
         }
-        public void RegisterSession(TrainingSession session, List<Client>? clients)
+        public void RegisterSession(TrainingSession session, List<Client>? clients, Trainer trainer)
         {
             session.Clients = clients ?? session.Clients;
             _sessionRepository.AddSession(session);
-            OnSessionRegistered(new SessionRegisteredEventArgs(session));
+            OnSessionRegistered(new SessionEventArgs(session, trainer));
         }
-        protected virtual void OnSessionRegistered(SessionRegisteredEventArgs e)
+        protected virtual void OnSessionRegistered(SessionEventArgs e)
         {
             SessionRegistered?.Invoke(this, e);
         }
-        protected virtual void OnTrainerRegistered(TrainerRegisteredEventArgs e)
+        protected virtual void OnTrainerRegistered(TrainerEventArgs e)
         {
             TrainerRegistered?.Invoke(this, e);
         }
-        protected virtual void OnClientRegistered(ClientRegisteredEventArgs e)
+        protected virtual void OnClientRegistered(ClientEventArgs e)
         {
             ClientRegistered?.Invoke(this, e);
         }
