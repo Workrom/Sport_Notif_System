@@ -10,6 +10,10 @@ namespace SRS.Interfaces.InMemory
     public class InMemoryClientRepository : IClientRepository
     {
         private readonly List<Client> _clients = new List<Client>();
+        public IEnumerable<Client> GetAllClients()
+        {
+            return _clients.AsReadOnly();
+        }
         public Client GetClientByName (string name)
         {
             return _clients.FirstOrDefault(c => c.Name == name);
@@ -22,20 +26,24 @@ namespace SRS.Interfaces.InMemory
         {
             _clients.Remove(client);
         }
-        public void UpdateClient(Client updatedClient)
+        public void UpdateClient(Client currentClient, Client updatedClient)
         {
-            var client = _clients.FirstOrDefault(c => c.Name == updatedClient.Name);
+            currentClient = _clients.FirstOrDefault(c => c.Name == currentClient.Name);
 
-            if (client != null)
+            if (currentClient != null)
             {
-                client.Name = updatedClient.Name;
-                client.Age = updatedClient.Age;
-                client.isVIP = updatedClient.isVIP;
+                currentClient.Name = updatedClient.Name;
+                currentClient.Age = updatedClient.Age;
+                currentClient.isVIP = updatedClient.isVIP;
             }
             else
             {
                 throw new Exception("Client not found");
             }
+        }
+        public int GetCount()
+        {
+            return _clients.Count();
         }
     }
 }

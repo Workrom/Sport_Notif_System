@@ -10,6 +10,10 @@ namespace SRS.Interfaces.InMemory
     public class InMemoryTrainerRepository : ITrainerRepository
     {
         private readonly List<Trainer> _trainers = new List<Trainer>();
+        public IEnumerable<Trainer> GetAllTrainers()
+        {
+            return _trainers.AsReadOnly();
+        }
         public Trainer GetTrainerByName(string name)
         {
             return _trainers.FirstOrDefault(t => t.Name == name);
@@ -22,19 +26,23 @@ namespace SRS.Interfaces.InMemory
         {
             _trainers.Remove(trainer);
         }
-        public void UpdateTrainer(Trainer updatedTrainer)
+        public void UpdateTrainer(Trainer currentTrainer, Trainer updatedTrainer)
         {
-            var trainer = _trainers.FirstOrDefault(c => c.Name == updatedTrainer.Name);
+            currentTrainer = _trainers.FirstOrDefault(c => c.Name == currentTrainer.Name);
 
-            if (trainer != null)
+            if (currentTrainer != null)
             {
-                trainer.Name = updatedTrainer.Name;
-                trainer.Age = updatedTrainer.Age;
+                currentTrainer.Name = updatedTrainer.Name;
+                currentTrainer.Age = updatedTrainer.Age;
             }
             else
             {
                 throw new Exception("Trainer not found");
             }
+        }
+        public int GetCount()
+        {
+            return _trainers.Count;
         }
     }
 }

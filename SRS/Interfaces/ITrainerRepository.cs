@@ -12,6 +12,6 @@ namespace SRS.Interfaces
         Trainer GetTrainerByName(string name);
         void AddTrainer(Trainer trainer);
         void RemoveTrainer(Trainer trainer);
-        void UpdateTrainer(Trainer trainer);
+        void UpdateTrainer(Trainer currentTrainer, Trainer updatedTrainer);
     }
 }

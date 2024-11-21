@@ -12,6 +12,6 @@ namespace SRS.Interfaces
         Client GetClientByName(string name);
         void AddClient(Client client);
         void RemoveClient(Client client);
-        void UpdateClient(Client client);
+        void UpdateClient(Client currentClient, Client updatedClient);
     }
 }

@@ -26,8 +26,6 @@ namespace SRS.Models
         {
             _status = StatusType.FREE;
         }
-
-        // Method to update the status - only callable by internal logic
         public void UpdateStatus(StatusType newStatus)
         {
             _status = newStatus;
