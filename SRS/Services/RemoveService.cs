@@ -2,11 +2,6 @@
 using SRS.CustomEventArgs;
 using SRS.Interfaces;
 using SRS.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SRS.Services
 {

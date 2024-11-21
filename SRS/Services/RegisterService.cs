@@ -2,12 +2,6 @@
 using SRS.CustomEventArgs;
 using SRS.Interfaces;
 using SRS.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Collections.Specialized.BitVector32;
 
 namespace SRS.Services
 {
@@ -37,13 +31,22 @@ namespace SRS.Services
             }
             else if (client.isVIP)
             {
-                if(session.VIPClient != null)
+                if (session.Clients.Count >= session.Capacity)
                 {
-                    AnsiConsole.MarkupLine($"VIP reserve slot is occupied by {session.VIPClient.Name}");
+                    if (session.VIPClient != null)
+                    {
+                        AnsiConsole.MarkupLine($"VIP reserve slot is occupied by {session.VIPClient.Name}");
+                    }
+                    else
+                    {
+                        session.VIPClient = client;
+                        _clientRepository.AddClient(client);
+                        OnClientRegistered(new ClientEventArgs(null, client, session));
+                    }
                 }
                 else
                 {
-                    session.VIPClient = client;
+                    session.Clients.Add(client);
                     _clientRepository.AddClient(client);
                     OnClientRegistered(new ClientEventArgs(null, client, session));
                 }
@@ -53,7 +56,7 @@ namespace SRS.Services
                 session.Clients.Add(client);
                 _clientRepository.AddClient(client);
                 OnClientRegistered(new ClientEventArgs(null, client, session));
-            }  
+            }
         }
         public void RegisterTrainer(Trainer trainer, List<TrainingSession>? sessions)
         {

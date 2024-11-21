@@ -42,37 +42,44 @@ namespace SRS
                         .Title("Settings Menu - Choose an [green]option[/]:")
                         .PageSize(5)
                         .HighlightStyle(DGreyStyle)
-                        .AddChoices(new[] { "View all", "Go back" }));
+                        .AddChoices(new[] { "View all", "Load Preset", "Go back" }));
                 switch (mainChoice)
                 {
                     case "View all":
                         AnsiConsole.AlternateScreen(() =>
                         {
                             Table table = new Table();
-                            table.AddColumn(new TableColumn("Name/Type"));
-                            table.AddColumn(new TableColumn("Age/Capacity"));
-                            table.AddColumn(new TableColumn("Status"));
                             table.AddColumn(new TableColumn(""));
+                            table.AddColumn(new TableColumn(""));
+                            table.AddColumn(new TableColumn(""));
+                            table.AddColumn(new TableColumn(""));
+                            table.ShowRowSeparators = true;
+                            table.ShowHeaders = false;
+                            table.ShowFooters = true;
                             foreach (Trainer trainer in Controller.GetListOf<Trainer>())
                             {
-                                table.AddRow(trainer.Name, trainer.Age.ToString());
+                                table.AddRow($"[dodgerblue2]{trainer.Name}[/]", $"[lightslateblue]{trainer.Age.ToString()}[/]");
                                 foreach (TrainingSession session in trainer.Sessions)
                                 {
                                     string color = session.Status.Equals(TrainingSession.StatusType.FREE) ? "[green]"
                                     : session.Status.Equals(TrainingSession.StatusType.FULL) ? "[red]"
                                     : session.Status.Equals(TrainingSession.StatusType.BUSY) ? "[indianred]"
                                     : "[darkolivegreen3_2]";
-                                    table.AddRow(session.Type, session.Capacity.ToString(), $"{color}{session.Status.ToString()}[/]");
+                                    table.AddRow("", $"[darkorange3_1]{session.Type}[/]", $"[darkorange3_1]{session.Capacity.ToString()}[/]", $"{color}{session.Status.ToString()}[/]");
                                     foreach (Client client in session.Clients)
                                     {
-                                        table.AddRow(client.Name, client.Age.ToString(), "[lightgoldenrod1]VIP: [/]" + client.isVIP.ToString());
+                                        table.AddRow("", client.Name, client.Age.ToString(), "[lightgoldenrod1]VIP: [/]" + client.isVIP.ToString());
                                     }
                                     if (session.VIPClient != null)
                                     {
-                                        table.AddRow(session.VIPClient.Name, session.VIPClient.Age.ToString(), "[lightgoldenrod1]VIP: [/]" + session.VIPClient.isVIP.ToString());
+                                        table.AddRow("[lightsalmon1]Reserved slot![/]", session.VIPClient.Name, session.VIPClient.Age.ToString(), "[lightgoldenrod1]VIP: [/]" + session.VIPClient.isVIP.ToString());
+                                    }
+                                    else
+                                    {
+                                        table.AddRow("[lightsalmon1]Reserved slot![/]", "[grey35]Isnt occupied[/]", "", "");
                                     }
                                 }
-                                table.AddEmptyRow();
+                                table.AddRow("[grey11]▄▄▄▄[/]", "[grey11]▄▄▄▄▄▄▄▄[/]", "[grey11]▄▄▄▄[/]", "[grey11]▄▄▄▄[/]");
                             }
                             while (true)
                             {
@@ -90,6 +97,87 @@ namespace SRS
                                         return;
                                 }
                             }
+                        });
+                        break;
+                    case "Load Preset":
+                        AnsiConsole.AlternateScreen(() =>
+                        {
+                            var trainer1 = new Trainer { Name = "Alice", Age = 35 };
+                            var trainer2 = new Trainer { Name = "Bob", Age = 40 };
+                            var trainer3 = new Trainer { Name = "Charlie", Age = 28 };
+
+                            Controller.AddTrainer(trainer1.Name, trainer1.Age, null);
+                            Controller.AddTrainer(trainer2.Name, trainer2.Age, null);
+                            Controller.AddTrainer(trainer3.Name, trainer3.Age, null);
+
+                            var addedTrainer1 = Controller.GetListOf<Trainer>().FirstOrDefault(t => t.Name == "Alice");
+                            var addedTrainer2 = Controller.GetListOf<Trainer>().FirstOrDefault(t => t.Name == "Bob");
+                            var addedTrainer3 = Controller.GetListOf<Trainer>().FirstOrDefault(t => t.Name == "Charlie");
+
+                            var session1 = new TrainingSession { Type = "Yoga", Capacity = 10 };
+                            if (addedTrainer1 != null)
+                                Controller.AddSession(session1.Type, session1.Capacity, addedTrainer1, null);
+
+                            var session2 = new TrainingSession { Type = "Strength Training", Capacity = 5 };
+                            if (addedTrainer2 != null)
+                                Controller.AddSession(session2.Type, session2.Capacity, addedTrainer2, null);
+
+                            var session3 = new TrainingSession { Type = "Cardio", Capacity = 8 };
+                            if (addedTrainer3 != null)
+                                Controller.AddSession(session3.Type, session3.Capacity, addedTrainer3, null);
+
+                            var addedSession1 = Controller.GetListOf<TrainingSession>().FirstOrDefault(s => s.Type == "Yoga");
+                            var addedSession2 = Controller.GetListOf<TrainingSession>().FirstOrDefault(s => s.Type == "Strength Training");
+                            var addedSession3 = Controller.GetListOf<TrainingSession>().FirstOrDefault(s => s.Type == "Cardio");
+
+                            var yogaClients = new List<Client>
+                            {
+                            new Client { Name = "David", Age = 25, isVIP = false },
+                            new Client { Name = "Eva", Age = 30, isVIP = true },
+                            new Client { Name = "Frank", Age = 22, isVIP = false },
+                            new Client { Name = "Grace", Age = 35, isVIP = true },
+                            new Client { Name = "Ivy", Age = 27, isVIP = false },
+                            new Client { Name = "Jack", Age = 31, isVIP = false },
+                            new Client { Name = "Luna", Age = 29, isVIP = true },
+                            new Client { Name = "Mason", Age = 24, isVIP = false },
+                            new Client { Name = "Nina", Age = 28, isVIP = false }
+                            };
+
+
+                            foreach (var client in yogaClients)
+                            {
+                                if (addedSession1 != null)
+                                    Controller.AddClient(client.Name, client.Age, client.isVIP, addedSession1);
+                            }
+
+                            var session2Clients = new List<Client>
+                            {
+                            new Client { Name = "Oscar", Age = 33, isVIP = false },
+                            new Client { Name = "Piper", Age = 34, isVIP = true }
+                            };
+
+                            var session3Clients = new List<Client>
+                            {
+                            new Client { Name = "Quinn", Age = 30, isVIP = false },
+                            new Client { Name = "Riley", Age = 32, isVIP = true },
+                            new Client { Name = "Sam", Age = 29, isVIP = false }
+                            };
+
+                            foreach (var client in session2Clients)
+                            {
+                                if (addedSession2 != null)
+                                    Controller.AddClient(client.Name, client.Age, client.isVIP, addedSession2);
+                            }
+
+                            foreach (var client in session3Clients)
+                            {
+                                if (addedSession3 != null)
+                                    Controller.AddClient(client.Name, client.Age, client.isVIP, addedSession3);
+                            }
+
+                            AnsiConsole.MarkupLine("[green]Preset data successfully loaded![/]");
+                            AnsiConsole.MarkupLine("[grey]Press any key to return to the menu...[/]");
+                            Console.ReadKey(true);
                         });
                         break;
                     case "Go back":
@@ -363,8 +451,11 @@ namespace SRS
 
                             if (selectedSession.Status == TrainingSession.StatusType.FREE)
                             {
-                                AnsiConsole.MarkupLine($"Session {selectedSession.Type} [gold]has ended![/]");
-                                foreach(Client client in selectedSession.Clients)
+                                AnsiConsole.MarkupLine($"Session {selectedSession.Type} [indianred]has ended![/]");
+
+                                var clientsToRemove = selectedSession.Clients.ToList();
+
+                                foreach (Client client in clientsToRemove)
                                 {
                                     Controller.RemoveClient(client, selectedSession);
                                 }
@@ -461,7 +552,10 @@ namespace SRS
 
                             Controller.AddClient(name, age, isvip, selectedSession);
 
-                            AnsiConsole.MarkupLine($"{selectedSession.Clients.Count}, {selectedSession.Capacity}");
+                            if(selectedSession.Clients.Count == selectedSession.Capacity)
+                            {
+                                selectedSession.UpdateStatus(TrainingSession.StatusType.FULL);
+                            }
                             AnsiConsole.MarkupLine("[grey]Press any key to return to the menu...[/]");
                             Console.ReadKey(true);
                         });

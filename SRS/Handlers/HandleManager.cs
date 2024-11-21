@@ -1,10 +1,5 @@
 ﻿using Spectre.Console;
 using SRS.CustomEventArgs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SRS.Handlers
 {
@@ -19,7 +14,7 @@ namespace SRS.Handlers
 
         public void OnClientRegisteredHandler(object? sender, ClientEventArgs e)
         {
-            AnsiConsole.MarkupLine($"Client {e.Client.Name}, age: {e.Client.Age} [green]has been registered into session[/] {e.Session.Type}");
+            AnsiConsole.MarkupLine($"Client {e.Client.Name}, age: {e.Client.Age} VIP: {e.Client.isVIP}[green]has been registered into session[/] {e.Session.Type}");
         }
         public void OnTrainerRegisteredHandler(object? sender, TrainerEventArgs e)
         {
@@ -27,7 +22,7 @@ namespace SRS.Handlers
         }
         public void OnSessionRegisteredHandler(object? sender, SessionEventArgs e)
         {
-            AnsiConsole.MarkupLine($"Session {e.Session.Type}, with capacity: {e.Session.Capacity}, status: {e.Session.Status}[green]has been registered into the system[/]");
+            AnsiConsole.MarkupLine($"Session {e.Session.Type}, with capacity: {e.Session.Capacity}, status: {e.Session.Status} [green]has been registered into the system[/]");
         }
 
         public void OnClientRemovedHandler(object? sender, ClientEventArgs e)
