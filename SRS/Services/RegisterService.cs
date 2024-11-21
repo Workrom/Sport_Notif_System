@@ -2,12 +2,6 @@
 using SRS.CustomEventArgs;
 using SRS.Interfaces;
 using SRS.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Collections.Specialized.BitVector32;
 
 namespace SRS.Services
 {
@@ -22,58 +16,60 @@ namespace SRS.Services
         public event EventHandler<TrainerEventArgs>? TrainerRegistered;
         public event EventHandler<SessionEventArgs>? SessionRegistered;
 
-        public RegisterService(IClientRepository clientRepo, ISessionRepository sessionRepo, ITrainerRepository trainerRepo)
+        public RegisterService(IClientRepository clientRepo, ITrainerRepository trainerRepo, ISessionRepository sessionRepo)
         {
             _clientRepository = clientRepo;
-            _sessionRepository = sessionRepo;
             _trainerRepository = trainerRepo;
+            _sessionRepository = sessionRepo;
         }
         public void RegisterClient(Client client, TrainingSession session)
         {
-            if (session.Clients.Count == session.Capacity && !(session.VIPClient == null))
+            if (session.Clients.Count >= session.Capacity && !(client.isVIP))
             {
                 OnSessionFull(new SessionFullEventArgs(session));
                 return;
             }
-            if (client.isVIP)
+            else if (client.isVIP)
             {
-                if (session.VIPClient == null)
+                if (session.Clients.Count >= session.Capacity)
                 {
-                    session.VIPClient = client;
-                    _clientRepository.AddClient(client);
-                    OnClientRegistered(new ClientEventArgs(client, session));
+                    if (session.VIPClient != null)
+                    {
+                        AnsiConsole.MarkupLine($"VIP reserve slot is occupied by {session.VIPClient.Name}");
+                    }
+                    else
+                    {
+                        session.VIPClient = client;
+                        _clientRepository.AddClient(client);
+                        OnClientRegistered(new ClientEventArgs(null, client, session));
+                    }
                 }
                 else
                 {
-                    AnsiConsole.MarkupLine("VIP slot is [red]already occupied.[/]");
-                    return;
+                    session.Clients.Add(client);
+                    _clientRepository.AddClient(client);
+                    OnClientRegistered(new ClientEventArgs(null, client, session));
                 }
             }
             else
             {
                 session.Clients.Add(client);
                 _clientRepository.AddClient(client);
-                OnClientRegistered(new ClientEventArgs(client, session));
+                OnClientRegistered(new ClientEventArgs(null, client, session));
             }
-
-            //*Dont know if i really need this. We gonna find out soon
-            //if (session.Clients.Count >= session.Capacity && !client.isVIP)
-            //{
-            //    AnsiConsole.MarkupLine("Session full.");
-            //    return;
-            //}          
         }
         public void RegisterTrainer(Trainer trainer, List<TrainingSession>? sessions)
         {
             trainer.Sessions = sessions ?? trainer.Sessions;
             _trainerRepository.AddTrainer(trainer);
-            OnTrainerRegistered(new TrainerEventArgs(trainer));
+            OnTrainerRegistered(new TrainerEventArgs(null, trainer));
         }
         public void RegisterSession(TrainingSession session, List<Client>? clients, Trainer trainer)
         {
             session.Clients = clients ?? session.Clients;
+            trainer.Sessions.Add(session);
             _sessionRepository.AddSession(session);
-            OnSessionRegistered(new SessionEventArgs(session, trainer));
+            OnSessionRegistered(new SessionEventArgs(null, session));
         }
         protected virtual void OnSessionRegistered(SessionEventArgs e)
         {

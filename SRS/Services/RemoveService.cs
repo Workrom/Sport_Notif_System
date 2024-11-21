@@ -2,11 +2,6 @@
 using SRS.CustomEventArgs;
 using SRS.Interfaces;
 using SRS.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SRS.Services
 {
@@ -20,11 +15,11 @@ namespace SRS.Services
         public event EventHandler<TrainerEventArgs>? TrainerRemoved;
         public event EventHandler<SessionEventArgs>? SessionRemoved;
 
-        public RemoveService(IClientRepository clientRepo, ISessionRepository sessionRepo, ITrainerRepository trainerRepo)
+        public RemoveService(IClientRepository clientRepo, ITrainerRepository trainerRepo, ISessionRepository sessionRepo)
         {
             _clientRepository = clientRepo;
-            _sessionRepository = sessionRepo;
             _trainerRepository = trainerRepo;
+            _sessionRepository = sessionRepo;
         }
         public void RemoveClient(Client client, TrainingSession session)
         {
@@ -32,7 +27,7 @@ namespace SRS.Services
             {
                 session.Clients.Remove(client);
                 _clientRepository.RemoveClient(client);
-                OnClientRemoved(new ClientEventArgs(client, session));
+                OnClientRemoved(new ClientEventArgs(null, client, session));
             }
             catch (Exception ex)
             {
@@ -44,7 +39,7 @@ namespace SRS.Services
             try
             {
                 _trainerRepository.RemoveTrainer(trainer);
-                OnTrainerRemoved(new TrainerEventArgs(trainer));
+                OnTrainerRemoved(new TrainerEventArgs(null, trainer));
             }
             catch (Exception ex)
             {
@@ -57,7 +52,7 @@ namespace SRS.Services
             {
                 trainer.Sessions.Remove(session);
                 _sessionRepository.RemoveSession(session);
-                OnSessionRemoved(new SessionEventArgs(session, trainer));
+                OnSessionRemoved(new SessionEventArgs(null, session));
             }
             catch (Exception ex)
             {

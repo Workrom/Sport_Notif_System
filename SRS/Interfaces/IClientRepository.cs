@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SRS.Models;
+﻿using SRS.Models;
 
 namespace SRS.Interfaces
 {
@@ -12,6 +7,6 @@ namespace SRS.Interfaces
         Client GetClientByName(string name);
         void AddClient(Client client);
         void RemoveClient(Client client);
-        void UpdateClient(Client client);
+        void UpdateClient(Client currentClient, Client updatedClient);
     }
 }

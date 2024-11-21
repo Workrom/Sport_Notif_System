@@ -1,15 +1,14 @@
 ﻿using SRS.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SRS.Interfaces.InMemory
 {
     public class InMemorySessionRepository : ISessionRepository
     {
         private readonly List<TrainingSession> _sessions = new List<TrainingSession>();
+        public IEnumerable<TrainingSession> GetAllSessions()
+        {
+            return _sessions.AsReadOnly();
+        }
         public TrainingSession GetSessionByType(string type)
         {
             return _sessions.FirstOrDefault(s => s.Type == type);
@@ -22,20 +21,24 @@ namespace SRS.Interfaces.InMemory
         {
             _sessions.Remove(session);
         }
-        public void UpdateSession(TrainingSession updatedSession)
+        public void UpdateSession(TrainingSession currentSession, TrainingSession updatedSession)
         {
-            var session = _sessions.FirstOrDefault(s => s.Type == updatedSession.Type);
+            currentSession = _sessions.FirstOrDefault(s => s.Type == currentSession.Type);
 
-            if (session != null)
+            if (currentSession != null)
             {
-                session.Type = updatedSession.Type;
-                session.Capacity = updatedSession.Capacity;
-                session.Clients = updatedSession.Clients;
+                currentSession.Type = updatedSession.Type;
+                currentSession.Capacity = updatedSession.Capacity;
+                currentSession.Clients = updatedSession.Clients;
             }
             else
             {
-                throw new Exception("Trainer not found");
+                throw new Exception("Session not found");
             }
+        }
+        public int GetCount()
+        {
+            return _sessions.Count;
         }
     }
 }
