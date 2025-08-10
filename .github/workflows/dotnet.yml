@@ -22,6 +22,7 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
+        dotnet-install-dir: 'D:\run\dotnet'
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
@@ -29,4 +30,4 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish .exe
-      run: dotnet publish -c Release --self-contained true -r win-x64 -o D:\MYAPP
+      run: dotnet publish -c Release --self-contained true -r win-x64 -o D:\run\MYAPP
