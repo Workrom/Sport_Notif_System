@@ -22,7 +22,6 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-        dotnet-install-dir: 'D:\run\dotnet'
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
