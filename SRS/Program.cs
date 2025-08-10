@@ -4,6 +4,7 @@ namespace SRS
 {
     internal class Program
     {
+        //test
         private static Style DGreyStyle = new Style(foreground: Color.DarkSlateGray3, background: Color.Grey19);
         private static Controller Controller;
         static void Main(string[] args)
@@ -42,7 +43,7 @@ namespace SRS
                         .Title("Settings Menu - Choose an [green]option[/]:")
                         .PageSize(5)
                         .HighlightStyle(DGreyStyle)
-                        .AddChoices(new[] { "View all", "Load Preset", "Go back" }));
+                        .AddChoices(new[] { "View all", "Load Preset", "Go back", "test"}));
                 switch (mainChoice)
                 {
                     case "View all":
@@ -182,6 +183,14 @@ namespace SRS
                         break;
                     case "Go back":
                         return;
+                    case "test":
+                        AnsiConsole.AlternateScreen(() =>
+                        {
+                            AnsiConsole.MarkupLine("[green]test cool[/]\n");
+                            AnsiConsole.MarkupLine("[grey]Press any key to return to the menu...[/]");
+                            Console.ReadKey(true);
+                        });
+                        break;
                 }
             }
         }
