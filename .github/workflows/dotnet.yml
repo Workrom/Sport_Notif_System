@@ -5,9 +5,14 @@ name: .NET
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Name to greet'
+        required: true
+        default: 'Nobody'
 
 jobs:
 
@@ -16,7 +21,7 @@ jobs:
     runs-on: self-hosted  # Runs on PC?
     
     steps:
-    
+    - run: echo "Hello, ${{ github.event.inputs.name }}!
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
